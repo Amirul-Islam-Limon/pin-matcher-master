@@ -12,47 +12,108 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="pin-generator half-width">
-                    <input class="form-control" type="text">
-                    <button class="generate-btn">Generate Pin</button>
+                    <input id="display-pin" class="form-control" type="text">
+                    <button id="generate-pin-btn" class="generate-btn">Generate Pin</button>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="input-section half-width">
-                    <input class="form-control" type="text">
+                    <input id="display-key" class="form-control" type="text">
                     <div class="numbers">
                         <div class="calc-body">
                             <div class="calc-button-row">
-                              <div class="button">7</div>
-                              <div class="button">8</div>
-                              <div class="button">9</div>
+                              <div onclick="handleKey(7)" class="button">7</div>
+                              <div onclick="handleKey(8)"  class="button">8</div>
+                              <div onclick="handleKey(9)"  class="button">9</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">4</div>
-                              <div class="button">5</div>
-                              <div class="button">6</div>
+                              <div onclick="handleKey(4)"  class="button">4</div>
+                              <div onclick="handleKey(5)"  class="button">5</div>
+                              <div onclick="handleKey(6)"  class="button">6</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">1</div>
-                              <div class="button">2</div>
-                              <div class="button">3</div>
+                              <div onclick="handleKey(1)"  class="button">1</div>
+                              <div onclick="handleKey(2)"  class="button">2</div>
+                              <div onclick="handleKey(3)"  class="button">3</div>
                             </div>
                             <div class="calc-button-row">
-                                <div class="button"><</div>
-                                <div class="button">0</div>
-                                <div class="button">C</div>
+                                <div onclick="backspaceButton()" class="button"><</div>
+                                <div onclick="handleKey(0)"  class="button">0</div>
+                                <div onclick="cancelButton()" class="button">C</div>
                             </div>
                             <div>
-                                <button type="submit" class="submit-btn">Submit</button>
-                                <p class="action-left">3 try left</p>
+                                <button id="submit-button" type="submit" class="submit-btn">Submit</button>
+                                <p class="action-left">Try as long as you succeed!</p>
                             </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="notify-section">
-            <p class="notify">❌ Pin Didn't Match, Please try again</p>
-            <p class="notify">✅ Pin Matched... Secret door is opening for you</p>
+            <p id="notify-wrong" class="notify">❌ Pin Didn't Match, Please try again</p>
+            <p id="notify-done" class="notify">✅ Pin Matched... Secret door is opening for you</p>
         </div>
     </div>
+    <script>
+        // pin generator========================================
+
+        document.getElementById("generate-pin-btn").addEventListener("click",function(){
+            let createPin = Math.random()*10000
+            if(createPin < 1000 || createPin > 9999){
+                createPin = Math.random()*10000
+            }
+            if(createPin < 10000 && createPin > 999){
+                const fourDigitPin = createPin.toFixed(0);
+                document.getElementById("display-pin").value = fourDigitPin;
+                document.getElementById("display-key").value = ""         
+            }
+            document.getElementById("notify-done").style.display = "none";
+            document.getElementById("notify-wrong").style.display = "none";
+        })
+
+        // key-pad-section===================================
+
+        function handleKey(num){
+            let previousNumber = document.getElementById("display-key").value
+            let currentNumber = previousNumber + num;
+            document.getElementById("display-key").value = currentNumber;
+        }
+
+        // submit-button handle =========================
+
+        document.getElementById("submit-button").addEventListener("click",function(){
+            const generatePinNumber = document.getElementById("display-pin").value
+            const inputPinNumber = document.getElementById("display-key").value
+            console.log(generatePinNumber,inputPinNumber);
+            if(generatePinNumber > 0 && generatePinNumber == inputPinNumber){
+                document.getElementById("notify-done").style.display = "block";
+                document.getElementById("notify-wrong").style.display = "none";
+            }
+            else if(generatePinNumber != inputPinNumber){
+                document.getElementById("notify-done").style.display = "none";
+                document.getElementById("notify-wrong").style.display = "block";
+            }
+        })
+
+        // cancel all display key =======================
+        function cancelButton(){
+            document.getElementById("display-key").value = ""
+        }
+
+        // Backspace button handle ===================================
+
+        function backspaceButton(){
+            let previousValue = document.getElementById("display-key").value
+            let previousNumber = parseInt(previousValue);
+            let finalNumber = Math.floor(previousNumber / 10);
+            if(finalNumber == 0){
+                document.getElementById("display-key").value = "";
+            }
+            else{
+                document.getElementById("display-key").value = finalNumber;
+            }
+            
+        }
+    </script>
 </body>
 </html>
